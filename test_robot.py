@@ -3,10 +3,8 @@ import sys
 import os
 import multiprocessing
 from core.log import Logger
-from core.components import *
 from stations import *
 from core.performing import *
-from testing import *
 from agv import AGV
 from smartmixingcells import SmartMixingCell
 from robotmeasures import RobotMeasureFactory
@@ -19,18 +17,6 @@ def hoursToSec(hrs):
 
 
 #Test functions
-def teststation():
-    b = Blackboard()
-    e = b.get('enviro')
-    b.put('[gate]mtbf',0)
-    b.put('[gate]mttr',0)
-    b.put('[gate]belttime',10)
-    b.put('[gate]opentime',5)
-    enviro2gate = Store(e)
-    gate2enviro = Store(e)
-    TestingGate(e,gate2enviro,enviro2gate)
-    Station('S1', enviro2gate, gate2enviro)
-
 def testsmc_1():
     b = Blackboard()
     e = b.get('enviro')
@@ -40,7 +26,6 @@ def testsmc_1():
 
 
 fdict = {
-    'teststation': teststation,
     'testsmc_1': testsmc_1
 }
 
@@ -63,8 +48,6 @@ def main(stop,fcode):
     enviro = simpy.Environment()
     logqueue = makeLogging()
     board = Blackboard()
-    board.put('stoptime',stop)
-    board.put('debugLevel',100)
     board.put('logqueue',logqueue)
     board.put('enviro',enviro)
     fdict[fcode]()
