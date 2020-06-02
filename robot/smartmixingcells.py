@@ -101,7 +101,9 @@ class MainController(Behaviour):
         self.robotcomm = Store(envy)
         self.robot = Robot('robot',self.robotcomm)
         # stations
-        ninputs, noutputs, nspas = b.get('[stations]number')
+        ninputs = b.get('[stations]inumber')
+        noutputs = b.get('[stations]onumber')
+        nspas = b.get('[stations]spa')
         self.stations = dict()
         b.put('[Shared]packages',dict())
         b.put('[Shared]packages.dirtybit',dict())
