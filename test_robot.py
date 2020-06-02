@@ -62,8 +62,8 @@ if __name__ == "__main__":
         st = b.get('stoptime')
         ex = b.get('experiments')
         ret = experiment(st,ex)
-        sys.stdout = original
         print(ret)
+        sys.stdout = original
         print('Simulation completed')
     else:
         usage = sys.argv[0] + ' testcode stoptime experiments logfilename'
