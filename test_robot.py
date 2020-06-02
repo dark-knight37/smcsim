@@ -1,19 +1,13 @@
-from simpy import Store
+from simpy import Store, Environment
 import sys
 import os
 import multiprocessing
 from core.log import Logger
-from stations import *
 from core.performing import *
 from agv import AGV
 from smartmixingcells import SmartMixingCell
 from robotmeasures import RobotMeasureFactory
 
-def daysToSec(dys):
-    return hoursToSec(24*dys)
-
-def hoursToSec(hrs):
-    return hrs*3600
 
 
 #Test functions
@@ -45,15 +39,16 @@ def makeLogging():
 
 def main(stop,fcode):
     #myProgressBar = ProgressBar(nElements=10, nIterations=100)
-    enviro = simpy.Environment()
+    enviro = Environment()
     logqueue = makeLogging()
     board = Blackboard()
     board.put('logqueue',logqueue)
     board.put('enviro',enviro)
+    metrics = board.get('kindmetric')
     fdict[fcode]()
     enviro.run(until=stop)
     logqueue.put('HALT')
-    measure = RobotMeasureFactory.generate('all')
+    measure = RobotMeasureFactory.generate(metrics)
     retval = measure.get()
     return retval
 
