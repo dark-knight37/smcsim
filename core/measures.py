@@ -1,8 +1,7 @@
+import core.utils
 
 class Sample():
-    def __init__(self,hheader):
-        self.header = hheader
-        self.lst = list()
+    def __init__(self,kind):
 
     def add(self,sample):
         self.lst.append(sample)
@@ -14,26 +13,37 @@ class Sample():
         return retval
 
 
-
 class Measurement():
     def __init__(self):
         self.samples = dict()
 
+    def add(self,sample):
+        name = sample.getName()
+        if not name in self.sample.keys():
+            self.samples[name] = list()
+        self.samples[name].append(sample)
+
     def fitness(self):
         pass
 
-    def getKeys(self,tags):
-        retval = self.samples.keys() if (tags is None) else list(tags)
+    def mean(self):
+        return self.swissknife(utils.mean,None,tags)
+
+    def std(self):
+        return self.swissknife(utils.std,None,tags)
+
+    def conflvl(self):
+        return self.swissknife(utils.std,level,tags)
+
+    def swissknife(self,funcù):
+        retval = dict()
+        for k in self.samples.keys():
+            retval[k] = func(k)
         return retval
 
-    def mean(self,tags = None):
-        keys = self.getKeys(tags)
-        retval = dict()
-        for k in keys:
-
-
-
-
-
-    def csv(self):
-        pass
+    #def csv(self):
+    #    retval = ';'.join(self.samples.keys())
+    #    size = self.samples[self.samples.keys()[0]]
+    #    for i in range(0,size):
+    #        retval += i.tocsv() + '\n'
+    #    return retval
