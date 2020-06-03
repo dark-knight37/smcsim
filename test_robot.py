@@ -6,8 +6,9 @@ from core.log import Logger
 from core.performing import *
 from robot.agv import AGV
 from robot.smartmixingcells import SmartMixingCell
-from robot.robotmeasures import RobotMeasureFactory
+from robot.measures import RobotMeasureFactory
 from core.blackboard import BlackboardFactory
+from core.measures import CollectedMeasure
 
 
 def makeLogger(q):
@@ -34,17 +35,18 @@ def main(stop):
     SmartMixingCell("SMC1",toavg)
     enviro.run(until=stop)
     logqueue.put('HALT')
-    measure = RobotMeasureFactory.generate(metrics)
-    retval = measure.get()
+    retval = RobotMeasureFactory.generate(metrics)
+    #retval = measure.get()
     return retval
 
 
 def experiment(stop,iters):
-    retval = list()
+    #todo boost by inferring the combination of experiments
+    retval = CollectedMeasure('hit;miss;')
     for i in range(0,iters):
-        print('**EXP ' + str(i) + ' **')
+        #print('**EXP ' + str(i) + ' **')
         temp = main(stop)
-        retval.append(temp)
+        retval.add(temp)
     return retval
 
 
@@ -62,7 +64,8 @@ if __name__ == "__main__":
         st = b.get('stoptime')
         ex = b.get('experiments')
         ret = experiment(st,ex)
-        print(ret)
+        csv = ret.tocsv()
+        print(csv)
         sys.stdout = original
         print('Simulation completed')
     else:

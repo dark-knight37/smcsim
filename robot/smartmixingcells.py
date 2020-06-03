@@ -42,7 +42,6 @@ class RuleBasedSystem(Loggable):
     def computeNextStep(self,stations):
         retval = None
         b = Blackboard()
-        #self.dumpBB('pre',stations)
         resetcondition = False
         stationtoreset = None
         self.internalcounter += 1
@@ -151,21 +150,14 @@ class MainController(Behaviour):
                 p = stat.getPallet()
                 flag = (dir == StationDir.INPUT) and (p.isEmpty())
                 flagout = ((dir == StationDir.OUTPUT) and (p.isSatisfied()))
-                #if dir == StationDir.INPUT:
-                #    self.log('debug-empty' + name + '/' + str(len(p.items)) + '/' + str(p.isEmpty()),2)
-                #else:
-                #    self.log('debug-full' + name + '/' + str(len(p.items)) + ',' + str(p.requirements.piecestogo()) + '/' + str(p.isSatisfied()),2)
                 flag = flag or flagout
                 if flag == True:
-                    #self.log('naturally flushing the station;' + name  +';',2)
-                    #self.log('content;' + str(stat.getPallet()) + ';',2)
                     stat.dirt()
                     if (flagout):
                         self.log('vault;' + str(p.lenght()) + ';', 2)
                         temp = Blackboard().get('[Measure]hit')
                         Blackboard().put('[Measure]hit',temp + p.lenght())
                     self.reload(name)
-        #self.log('got check;;',2)
 
 
 
