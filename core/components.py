@@ -42,7 +42,7 @@ class Component(Loggable):
         while True:
             while (self.working == True):
                 try:
-                    self.log('is working;;',2)
+                    self.log('is cii_replpackage;;',2)
                     yield self.env.process(self.fail())
                     self.log('has failed by itself;;',0)
                     self.working = False

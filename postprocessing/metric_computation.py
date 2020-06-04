@@ -4,7 +4,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         csvfilename = sys.argv[1]
         analyser = MetricAnalyser()
-        analyser.addMetric(Downtime('topevent','TopABCD','is working','is interrupted by'))
+        analyser.addMetric(Downtime('topevent','TopABCD','is cii_replpackage','is interrupted by'))
         analyser.compute(csvfilename)
         report = analyser.report()
         print(report)

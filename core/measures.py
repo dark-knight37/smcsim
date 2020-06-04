@@ -1,49 +1,67 @@
 import core.utils
+from core.metaclasses import Singleton
 
-class Sample():
-    def __init__(self,kind):
 
-    def add(self,sample):
-        self.lst.append(sample)
+class Recorder(metaclass=Singleton):
+    def __init__(self):
+        self.reset()
 
-    def tocsv(self):
-        retval = self.header + '\n'
-        for i in self.lst:
-            retval += i.tocsv() + '\n'
+    def reset(self):
+        self.sample = dict()
+
+    def add(self,tag,value):
+        if not tag in self.sample.keys():
+            self.sample[tag] = list()
+        self.sample[tag].append(value)
+
+    def addMC(self,tag,channel,value):
+        if not tag in self.sample.keys():
+            self.sample[tag] = dict()
+        if not channel in self.sample[tag].keys():
+            self.sample[tag][channel] = list()
+        self.sample[tag][channel].append(value)
+
+    def generateRecord(self):
+        retval = dict(self.sample)
+        for k in retval.keys():
+            temp = retval[k]
+            if type(temp) == dict:
+                summ = 0
+                for ch in temp.keys():
+                    summ += sum(temp[ch])
+                retval[k] = summ/len(temp.keys())
+            else:
+                retval[k] = sum(temp)
         return retval
 
 
-class Measurement():
+class Analyser():
     def __init__(self):
-        self.samples = dict()
+        self.record = dict()
 
-    def add(self,sample):
-        name = sample.getName()
-        if not name in self.sample.keys():
-            self.samples[name] = list()
-        self.samples[name].append(sample)
-
-    def fitness(self):
-        pass
+    def add(self,rrec):
+        for k in rrec:
+            if not k in self.record.keys():
+                self.record[k] = list()
+            self.record[k].append(rrec[k])
 
     def mean(self):
-        return self.swissknife(utils.mean,None,tags)
+        return self.swissknife(core.utils.mean)
 
     def std(self):
-        return self.swissknife(utils.std,None,tags)
+        return self.swissknife(core.utils.std)
 
-    def conflvl(self):
-        return self.swissknife(utils.std,level,tags)
+    def confidence95(self):
+        return self.swissknife(core.utils.confidence95)
 
-    def swissknife(self,funcù):
+    def confidence99(self):
+        return self.swissknife(core.utils.confidence99)
+
+    def swissknife(self,func):
         retval = dict()
-        for k in self.samples.keys():
-            retval[k] = func(k)
+        for k in self.record.keys():
+            retval[k] = func(self.record[k])
         return retval
 
-    #def csv(self):
-    #    retval = ';'.join(self.samples.keys())
-    #    size = self.samples[self.samples.keys()[0]]
-    #    for i in range(0,size):
-    #        retval += i.tocsv() + '\n'
-    #    return retval
+    def getAll(self):
+        return self.mean(), self.std(), self.confidence95(), self.confidence99()

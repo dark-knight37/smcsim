@@ -27,12 +27,12 @@ class BlackboardFactory():
         try:
             temp = reader['main']['experiments']
             black.put('experiments',int(temp))
+            temp = reader['main']['epsilon']
+            black.put('epsilon',float(temp))
             temp = reader['main']['parallelism']
             black.put('parallelism',int(temp))
             temp = reader['main']['debugLevel']
             black.put('debugLevel',int(temp))
-            temp = reader['main']['kindmetric']
-            black.put('kindmetric',temp)
             temp = reader['main']['stoptime']
             temp = BlackboardFactory.tosecond(temp)
             black.put('stoptime',temp)

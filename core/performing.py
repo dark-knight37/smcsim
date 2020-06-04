@@ -36,7 +36,7 @@ class SimpleBehaviour(Behaviour):
     def do(self):
         yield self.env.timeout(self.deltatime)
         if (self.onrun == True):
-            self.log('is working;;',2)
+            self.log('is cii_replpackage;;',2)
 
 
 class Performing(Component):
