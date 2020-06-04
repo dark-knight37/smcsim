@@ -37,12 +37,21 @@ def main(stop):
     retval = record.generateRecord()
     return retval
 
-def experiment(stop,iters):
+def experiment(stop,iters,eps):
     retval = Analyser()
-    for i in range(0,iters):
-        print('**EXP ' + str(i) + ' **')
+    stopcondition = False
+    counter = 0
+    while (not stopcondition):
+        print('PRE#' + str(counter))
         record = main(stop)
         retval.add(record)
+        #temp = retval.confidence99()
+        #minc99, maxc99 = temp
+        #delta = (maxc99 - minc99)
+        #mid =  (maxc99 + minc99) / 2
+        #curr = delta / mid
+        counter += 1
+        stopcondition = (counter == iters)
     return retval
 
 def root(args):
@@ -57,7 +66,8 @@ def root(args):
     b = Blackboard()
     st = b.get('stoptime')
     ex = b.get('experiments')
-    ret = experiment(st, ex)
+    eps = b.get('epsilon')
+    ret = experiment(st, ex, eps)
     tuplet = ret.getAll()
     print(tuplet)
     sys.stdout = original

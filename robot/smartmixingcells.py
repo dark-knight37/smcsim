@@ -162,6 +162,7 @@ class MainController(Behaviour):
             self.robotcomm.put(action)
             yield self.robotcomm.get()
             self.checkFullEmptyPallets()
+            #print(Blackboard().get('stoptime') - self.env.now)
 
 
 class SmartMixingCell():
