@@ -1,6 +1,7 @@
 from core.performing import Behaviour, Performing
 from core.blackboard import Blackboard
 from random import gauss
+from core.measures import Recorder
 
 
 class RobotProgram(Behaviour):
@@ -9,6 +10,7 @@ class RobotProgram(Behaviour):
         self.movementTime = movetime
         self.channel = commChannel
         self.precision = pprecision
+        self.timemarker = 0
 
     def gripManagement(self, health, accuracy):
         mu = accuracy * health
@@ -20,7 +22,9 @@ class RobotProgram(Behaviour):
     def do(self):
         if (self.onrun == True):
             #self.log('is waiting to get work;;',1)
+            time = self.env.now
             (iname, inpacket, kind, oname, outpacket, accuracy) = yield self.channel.get()
+            Recorder().add('robot_idle',self.env.now - time)
             #self.log('getting the product from;' + iname + ' ' + str(inpacket)+ ';',1)
             #self.log('putting the product to;' + oname + ' ' + str(outpacket)+ ';',1)
             inpacket = Blackboard().get('[Shared]packages')[iname]

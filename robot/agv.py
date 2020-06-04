@@ -4,6 +4,7 @@ from core.components import Component
 from robot.datatypes import MovementOrder
 from robot.pallets import PalletFactory
 from robot.requirements import CustomerRequirementFactory
+from core.measures import Recorder
 
 class Vehicle(Component):
     def __init__(self,name, ttime, oorder):
@@ -13,7 +14,9 @@ class Vehicle(Component):
 
     def run(self):
         while True:
+            time = self.env.now
             received = yield self.order.get()
+            Recorder().addMC('agv','vehicle1',self.env.now - time)
             movorder, putchannel, getchannel = received
             b = Blackboard()
             black_cap = b.get('[pallet]capacity')

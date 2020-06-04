@@ -7,6 +7,7 @@ from robot.stations import Station
 from robot.datatypes import *
 from robot.visions import Vision
 from core.log import Loggable
+from core.measures import Recorder
 
 
 class RuleBasedSystem(Loggable):
@@ -28,20 +29,8 @@ class RuleBasedSystem(Loggable):
                 station = choice(stats)
         return flag, station
 
-    def dumpBB(self,mes,s):
-        stats = list(s.items())
-        stats = list(filter(lambda x: x[1][0].operative(),stats))
-        instats = list(filter(lambda x: x[1][1] == StationDir.INPUT,stats))
-        instats = list(map(lambda x: (x[0],x[1][0]),instats))
-        self.log(mes, 2)
-        for i in instats:
-            n , ii = i
-            p = ii.getPallet()
-            self.log('debug-empty' + n+ '/' + str(len(p.items)) + '/' + str(p.isEmpty()), 2)
-
     def computeNextStep(self,stations):
         retval = None
-        b = Blackboard()
         resetcondition = False
         stationtoreset = None
         self.internalcounter += 1
@@ -82,9 +71,7 @@ class RuleBasedSystem(Loggable):
                     continuecondition = continuecondition and len(outstats) > 0
                 if (retval is None):
                     resetcondition, stationtoreset = self.evaluateplateau(stations)
-        #self.dumpBB('post',stations)
         return retval, resetcondition, stationtoreset
-
 
 
 #todo : future implementation, SPAs
@@ -112,9 +99,6 @@ class MainController(Behaviour):
         for sindex in range(0,noutputs):
             sname, stat = self.makeStation(sindex + ninputs,envy)
             self.stations[sname] = (stat,StationDir.OUTPUT)
-        b.put('[Measure]hit',0)
-        b.put('[Measure]miss',0)
-
 
     def makeStation(self,index,envy):
         name = 'STAT_' + str(index)
@@ -154,13 +138,9 @@ class MainController(Behaviour):
                 if flag == True:
                     stat.dirt()
                     if (flagout):
-                        self.log('vault;' + str(p.lenght()) + ';', 2)
-                        temp = Blackboard().get('[Measure]hit')
-                        Blackboard().put('[Measure]hit',temp + p.lenght())
+                        #self.log('vault;' + str(p.lenght()) + ';', 2)
+                        Recorder().add('hit',p.lenght())
                     self.reload(name)
-
-
-
 
     def do(self):
         if (self.onrun == True):
@@ -175,9 +155,8 @@ class MainController(Behaviour):
                         p = stationtoreset.getPallet()
                         pname = stationtoreset.getName()
                         l = p.lenght()
-                        self.log('MISS;' + stationtoreset.getName() + ',' + str(l) + ';',2)
-                        temp = Blackboard().get('[Measure]miss')
-                        Blackboard().put('[Measure]miss',temp + l)
+                        #self.log('MISS;' + stationtoreset.getName() + ',' + str(l) + ';',2)
+                        Recorder().add('miss',l)
                         self.reload(pname)
                 yield self.env.timeout(1)
             self.robotcomm.put(action)
@@ -190,4 +169,3 @@ class SmartMixingCell():
         b= Blackboard()
         self.controller = MainController(name + '_sw', agvchannel)
         self.structure = Performing(name + '_hw',self.controller,b.get('[controller]mtbf'),b.get('[controller]mttr'))
-

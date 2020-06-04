@@ -1,7 +1,8 @@
 import random
 import numpy
 import statistics
-from statistics import NormalDist, mean, stdev
+from scipy.stats import sem, t
+
 
 def lottery(probabilities):
     ssum = 0
@@ -28,16 +29,19 @@ def unpack_interrupt(cause):
     return (kind, sender)
 
 def mean(data):
-    return mean(data)
+    return statistics.mean(data)
 
 def std(data):
-    return stdev(data)
+    return statistics.stdev(data)
 
 def confidence(data, conflevel):
-    dist = NormalDist.from_samples(data)
-    z = NormalDist().inv_cdf((1 + conflevel) / 2.)
-    h = dist.stdev * z / ((len(data) - 1) ** .5)
-    return dist.mean - h, dist.mean + h
+    n = len(data)
+    m = mean(data)
+    std_err = sem(data)
+    h = std_err * t.ppf((1 + conflevel) / 2, n - 1)
+    start = m - h
+    end = m + h
+    return start, end
 
 def confidence95(data):
     return confidence(data,0.95)
