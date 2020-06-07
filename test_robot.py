@@ -8,6 +8,7 @@ from robot.smartmixingcells import SmartMixingCell
 from core.blackboard import BlackboardFactory
 from core.measures import Recorder, Analyser
 from multiprocessing import Pool, Queue, Process
+import time
 
 def makeLogger(q):
     logger = Logger(q)
@@ -68,10 +69,12 @@ def root(args):
     ex = b.get('experiments')
     eps = b.get('epsilon')
     ret = experiment(st, ex, eps)
-    tuplet = ret.getAll()
+    pretime = time.clock()
+    tuplet = ret.confidence99()
+    posttime = time.clock()
+    print('time (sec) = ' + str(posttime - pretime))
     print(tuplet)
     sys.stdout = original
-
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
