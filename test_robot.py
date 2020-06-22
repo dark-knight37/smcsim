@@ -43,7 +43,7 @@ def experiment(stop,iters,eps):
     stopcondition = False
     counter = 0
     while (not stopcondition):
-        print('PRE#' + str(counter))
+        #print('PRE#' + str(counter))
         record = main(stop)
         retval.add(record)
         #temp = retval.confidence99()
