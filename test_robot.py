@@ -69,9 +69,9 @@ def root(args):
     ex = b.get('experiments')
     eps = b.get('epsilon')
     ret = experiment(st, ex, eps)
-    pretime = time.clock()
+    pretime = time.time()
     tuplet = ret.confidence99()
-    posttime = time.clock()
+    posttime = time.time()
     print('time (sec) = ' + str(posttime - pretime))
     print(tuplet)
     sys.stdout = original

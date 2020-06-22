@@ -10,11 +10,11 @@ class StationLogic(Behaviour):
         self.beltmovement = belttime
 
     def movement(self):
-        #self.log('opening the gate;;',0)
+        self.log('opening the gate;;',0)
         yield self.env.timeout(self.opening)
-        #self.log('moving the belt;;',0)
+        self.log('moving the belt;;',0)
         yield self.env.timeout(self.beltmovement)
-        #self.log('closing the gate;;',0)
+        self.log('closing the gate;;',0)
         yield self.env.timeout(self.opening)
 
     def do(self):

@@ -32,7 +32,7 @@ class Vehicle(Component):
                 putchannel.put('REMOVE')
                 yield self.env.timeout(self.transportationTime)
                 package = yield getchannel.get()
-            #self.log('loading station;;', 2)
+            self.log('loading station;;', 2)
             yield self.env.timeout(self.transportationTime)
             putchannel.put(pallet)
 
