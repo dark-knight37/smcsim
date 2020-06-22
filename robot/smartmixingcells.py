@@ -138,7 +138,7 @@ class MainController(Behaviour):
                 if flag == True:
                     stat.dirt()
                     if (flagout):
-                        #self.log('vault;' + str(p.lenght()) + ';', 2)
+                        self.log('vault;' + str(p.lenght()) + ';', 2)
                         Recorder().add('hit',p.lenght())
                     self.reload(name)
 
@@ -155,7 +155,7 @@ class MainController(Behaviour):
                         p = stationtoreset.getPallet()
                         pname = stationtoreset.getName()
                         l = p.lenght()
-                        #self.log('MISS;' + stationtoreset.getName() + ',' + str(l) + ';',2)
+                        self.log('MISS;' + stationtoreset.getName() + ',' + str(l) + ';',2)
                         Recorder().add('miss',l)
                         self.reload(pname)
                 yield self.env.timeout(1)
