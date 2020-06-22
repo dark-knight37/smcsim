@@ -21,11 +21,11 @@ class RobotProgram(Behaviour):
 
     def do(self):
         if (self.onrun == True):
-            #self.log('is waiting to get work;;',1)
+            self.log('is waiting to get work;;',1)
             time = self.env.now
             (iname, inpacket, kind, oname, outpacket, accuracy) = yield self.channel.get()
             Recorder().add('robot_idle',self.env.now - time)
-            #self.log('getting the product from;' + iname + ' ' + str(inpacket)+ ';',1)
+            self.log('getting the product from;' + iname + ' ' + str(inpacket)+ ';',1)
             #self.log('putting the product to;' + oname + ' ' + str(outpacket)+ ';',1)
             inpacket = Blackboard().get('[Shared]packages')[iname]
             outpacket = Blackboard().get('[Shared]packages')[oname]
@@ -37,7 +37,7 @@ class RobotProgram(Behaviour):
             p.integrity = newi
             outpacket.add(p)
             #self.log('got the product from;' + iname + ' ' + str(inpacket)+ ';',1)
-            #self.log('put the product to;' + oname + ' ' + str(outpacket)+ ';',1)
+            self.log('put the product to;' + oname + ' ' + str(outpacket)+ ';',1)
             self.channel.put('DONE')
 
 
